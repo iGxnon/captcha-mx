@@ -16,7 +16,7 @@ if __name__ == '__main__':
 
     wrapper_train = wrapper_set(data_name='train',
                                 label_name='label',
-                                data_path=os.fspath('./../../sample/train'),
+                                data_path=os.fspath('./../../sample/train_hard'),
                                 data_shape=(1, 80, 30),  # (c, w, h)
                                 label_shape=opt.MAX_CHAR_LEN)
 
