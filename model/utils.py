@@ -74,6 +74,17 @@ def get_output(_input):
     return [remove_rptch(out) for out in get_label(nd.argmax(_input, axis=-1))]
 
 
+def acc_metric(label, pred):
+    pred = get_output(pred)
+    label = get_label(label)
+    bingo = 0
+    for i in range(len(pred)):
+        if pred[i] == label[i]:
+            bingo += 1
+    return bingo / len(pred)
+
+
 if __name__ == '__main__':
     raw = nd.random.randn(4, 10, 63)
     print(get_output(raw))
+

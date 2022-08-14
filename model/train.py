@@ -7,8 +7,7 @@ from mxnet.gluon.model_zoo import vision
 from loader import wrapper_set
 from const import opt
 import os
-from utils import get_label
-from utils import get_output
+from utils import acc_metric
 from mxnet.gluon.contrib.estimator.event_handler import TrainBegin, TrainEnd, EpochEnd, CheckpointHandler
 
 
@@ -39,86 +38,67 @@ class OutputLayer(nn.HybridBlock):
         return _x
 
 
-net = nn.HybridSequential(prefix='')
-net.add(nn.BatchNorm(scale=False, center=False))
-net.add(nn.Conv2D(channels=64, kernel_size=5, strides=2, padding=3, use_bias=False))
-net.add(nn.BatchNorm())
-net.add(nn.Activation('relu'))
-net.add(nn.MaxPool2D(3, 2, 1))
+def build_net():
+    net = nn.HybridSequential(prefix='')
+    net.add(nn.BatchNorm(scale=False, center=False))
+    net.add(nn.Conv2D(channels=64, kernel_size=5, strides=2, padding=3, use_bias=False))
+    net.add(nn.BatchNorm())
+    net.add(nn.Activation('relu'))
+    net.add(nn.MaxPool2D(3, 2, 1))
 
-resnet_18_v2_feat = vision.resnet18_v2(pretrained=False).features
-net.add(*resnet_18_v2_feat[5:7])
-net.add(*resnet_18_v2_feat[9:-2])
+    resnet_18_v2_feat = vision.resnet18_v2(pretrained=False).features
+    net.add(*resnet_18_v2_feat[5:7])
+    net.add(*resnet_18_v2_feat[9:-2])
 
-net.add(OutputLayer())
+    net.add(OutputLayer())
 
-net.initialize(init.Xavier())
-
-net.hybridize()
-# print(net)
-# print(len(net))
-
-wrapper_train = wrapper_set(data_name='train',
-                            label_name='label',
-                            data_path=os.fspath('./../sample/train'),
-                            data_shape=(3, 120, 60),  # (c, w, h)
-                            label_shape=opt.MAX_CHAR_LEN)
-
-wrapper_valid = wrapper_set(data_name='valid',
-                            label_name='label',
-                            data_path=os.fspath('./../sample/valid'),
-                            data_shape=(3, 120, 60),  # (c, w, h)
-                            label_shape=opt.MAX_CHAR_LEN)
-
-trans = transforms.Compose([
-    transforms.ToTensor()
-])
-
-wrapper_train = wrapper_train.transform_first(trans)
-wrapper_valid = wrapper_valid.transform_first(trans)
-
-train_loader = mx.gluon.data.DataLoader(dataset=wrapper_train, batch_size=64, shuffle=True, num_workers=4)
-valid_loader = mx.gluon.data.DataLoader(dataset=wrapper_valid, batch_size=32, shuffle=True, num_workers=2)
-
-# x, y = iter(train_loader).__next__()
-# out = net(x)
-# print(out.shape)
-# print(y.shape)
-
-loss_fn = gluon.loss.CTCLoss(layout='NTC', label_layout='NT')
-#
-# print(loss_fn(out, y))
-
-learning_rate = 0.04
-num_epochs = 2
-trainer = gluon.Trainer(net.collect_params(),
-                        'sgd', {'learning_rate': learning_rate})
+    net.hybridize()
+    return net
 
 
-def acc_metric(label, pred):
-    pred = get_output(pred)
-    label = get_label(label)
-    bingo = 0
-    for i in range(len(pred)):
-        if pred[i] == label[i]:
-            bingo += 1
-    return bingo / len(pred)
+if __name__ == '__main__':
+    wrapper_train = wrapper_set(data_name='train',
+                                label_name='label',
+                                data_path=os.fspath('./../sample/train'),
+                                data_shape=(3, 120, 60),  # (c, w, h)
+                                label_shape=opt.MAX_CHAR_LEN)
 
+    wrapper_valid = wrapper_set(data_name='valid',
+                                label_name='label',
+                                data_path=os.fspath('./../sample/valid'),
+                                data_shape=(3, 120, 60),  # (c, w, h)
+                                label_shape=opt.MAX_CHAR_LEN)
 
-acc = mx.metric.create(acc_metric)
+    trans = transforms.Compose([
+        transforms.ToTensor()
+    ])
 
-checkpoint_handler = CheckpointHandler(model_dir='./trained',
-                                       model_prefix='my_model',
-                                       monitor=acc,  # Monitors a metric
-                                       save_best=True)  # Save the best model in terms of
+    wrapper_train = wrapper_train.transform_first(trans)
+    wrapper_valid = wrapper_valid.transform_first(trans)
 
+    train_loader = mx.gluon.data.DataLoader(dataset=wrapper_train, batch_size=64, shuffle=True, num_workers=4)
+    valid_loader = mx.gluon.data.DataLoader(dataset=wrapper_valid, batch_size=32, shuffle=True, num_workers=2)
 
-est = estimator.Estimator(net=net,
-                          loss=loss_fn,
-                          train_metrics=acc,
-                          trainer=trainer)
+    net = build_net()
+    net.initialize(init.Xavier())
+    loss_fn = gluon.loss.CTCLoss(layout='NTC', label_layout='NT')
+    learning_rate = 0.03
+    num_epochs = 1000
+    trainer = gluon.Trainer(net.collect_params(),
+                            'sgd', {'learning_rate': learning_rate})
+    acc = mx.metric.create(acc_metric)
 
-est.fit(train_data=train_loader,
-        val_data=valid_loader,
-        epochs=num_epochs,
-        event_handlers=[checkpoint_handler])
+    checkpoint_handler = CheckpointHandler(model_dir='./trained',
+                                           model_prefix='my_model',
+                                           monitor=acc,  # Monitors a metric
+                                           save_best=True)  # Save the best model in terms of
+
+    est = estimator.Estimator(net=net,
+                              loss=loss_fn,
+                              train_metrics=acc,
+                              trainer=trainer)
+
+    est.fit(train_data=train_loader,
+            val_data=valid_loader,
+            epochs=num_epochs,
+            event_handlers=[checkpoint_handler])

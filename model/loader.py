@@ -118,8 +118,7 @@ if __name__ == '__main__':
     print(batch.label[0].dtype)
     show_img(batch.data, batch.label, 5, 2, title_size=50)
 
-    wrapper = wrapper_set(_opt=opt,
-                          data_name='train',
+    wrapper = wrapper_set(data_name='train',
                           label_name='label',
                           data_path=os.fspath('./../sample/train'),
                           data_shape=(3, 120, 60),  # (c, w, h)
