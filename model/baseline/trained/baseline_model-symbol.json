@@ -1,0 +1,373 @@
+{
+  "nodes": [
+    {
+      "op": "null", 
+      "name": "data", 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "conv0_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "[\"xavier\", {\"rnd_type\": \"uniform\", \"factor_type\": \"avg\", \"magnitude\": 3}]", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(32, 1, 3, 3)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "conv0_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "[\"normal\", {\"sigma\": 0.01}]", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(32,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Convolution", 
+      "name": "conv0_fwd", 
+      "attrs": {
+        "dilate": "(1, 1)", 
+        "kernel": "(3, 3)", 
+        "layout": "NCHW", 
+        "no_bias": "False", 
+        "num_filter": "32", 
+        "num_group": "1", 
+        "pad": "(0, 0)", 
+        "stride": "(1, 1)"
+      }, 
+      "inputs": [[0, 0, 0], [1, 0, 0], [2, 0, 0]]
+    }, 
+    {
+      "op": "Activation", 
+      "name": "conv0_relu_fwd", 
+      "attrs": {"act_type": "relu"}, 
+      "inputs": [[3, 0, 0]]
+    }, 
+    {
+      "op": "Pooling", 
+      "name": "pool0_fwd", 
+      "attrs": {
+        "global_pool": "False", 
+        "kernel": "(2, 2)", 
+        "layout": "NCHW", 
+        "pad": "(0, 0)", 
+        "pool_type": "max", 
+        "pooling_convention": "valid", 
+        "stride": "(2, 2)"
+      }, 
+      "inputs": [[4, 0, 0]]
+    }, 
+    {
+      "op": "Dropout", 
+      "name": "dropout0_fwd", 
+      "attrs": {
+        "axes": "()", 
+        "cudnn_off": "False", 
+        "p": "0.2"
+      }, 
+      "inputs": [[5, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "conv1_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "[\"xavier\", {\"rnd_type\": \"uniform\", \"factor_type\": \"avg\", \"magnitude\": 3}]", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(64, 32, 3, 3)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "conv1_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "[\"normal\", {\"sigma\": 0.01}]", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(64,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Convolution", 
+      "name": "conv1_fwd", 
+      "attrs": {
+        "dilate": "(1, 1)", 
+        "kernel": "(3, 3)", 
+        "layout": "NCHW", 
+        "no_bias": "False", 
+        "num_filter": "64", 
+        "num_group": "1", 
+        "pad": "(0, 0)", 
+        "stride": "(1, 1)"
+      }, 
+      "inputs": [[6, 0, 0], [7, 0, 0], [8, 0, 0]]
+    }, 
+    {
+      "op": "Activation", 
+      "name": "conv1_relu_fwd", 
+      "attrs": {"act_type": "relu"}, 
+      "inputs": [[9, 0, 0]]
+    }, 
+    {
+      "op": "Pooling", 
+      "name": "pool1_fwd", 
+      "attrs": {
+        "global_pool": "False", 
+        "kernel": "(2, 2)", 
+        "layout": "NCHW", 
+        "pad": "(0, 0)", 
+        "pool_type": "max", 
+        "pooling_convention": "valid", 
+        "stride": "(2, 2)"
+      }, 
+      "inputs": [[10, 0, 0]]
+    }, 
+    {
+      "op": "Dropout", 
+      "name": "dropout1_fwd", 
+      "attrs": {
+        "axes": "()", 
+        "cudnn_off": "False", 
+        "p": "0.2"
+      }, 
+      "inputs": [[11, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "conv2_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "[\"xavier\", {\"rnd_type\": \"uniform\", \"factor_type\": \"avg\", \"magnitude\": 3}]", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(128, 64, 3, 3)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "conv2_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "[\"normal\", {\"sigma\": 0.01}]", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(128,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Convolution", 
+      "name": "conv2_fwd", 
+      "attrs": {
+        "dilate": "(1, 1)", 
+        "kernel": "(3, 3)", 
+        "layout": "NCHW", 
+        "no_bias": "False", 
+        "num_filter": "128", 
+        "num_group": "1", 
+        "pad": "(0, 0)", 
+        "stride": "(1, 1)"
+      }, 
+      "inputs": [[12, 0, 0], [13, 0, 0], [14, 0, 0]]
+    }, 
+    {
+      "op": "Activation", 
+      "name": "conv2_relu_fwd", 
+      "attrs": {"act_type": "relu"}, 
+      "inputs": [[15, 0, 0]]
+    }, 
+    {
+      "op": "Pooling", 
+      "name": "pool2_fwd", 
+      "attrs": {
+        "global_pool": "False", 
+        "kernel": "(2, 2)", 
+        "layout": "NCHW", 
+        "pad": "(0, 0)", 
+        "pool_type": "max", 
+        "pooling_convention": "valid", 
+        "stride": "(2, 2)"
+      }, 
+      "inputs": [[16, 0, 0]]
+    }, 
+    {
+      "op": "Dropout", 
+      "name": "dropout2_fwd", 
+      "attrs": {
+        "axes": "()", 
+        "cudnn_off": "False", 
+        "p": "0.2"
+      }, 
+      "inputs": [[17, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "dense0_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "[\"xavier\", {\"rnd_type\": \"uniform\", \"factor_type\": \"avg\", \"magnitude\": 3}]", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(1024, 2048)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "dense0_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "[\"normal\", {\"sigma\": 0.01}]", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(1024,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "FullyConnected", 
+      "name": "dense0_fwd", 
+      "attrs": {
+        "flatten": "True", 
+        "no_bias": "False", 
+        "num_hidden": "1024"
+      }, 
+      "inputs": [[18, 0, 0], [19, 0, 0], [20, 0, 0]]
+    }, 
+    {
+      "op": "Activation", 
+      "name": "dense0_relu_fwd", 
+      "attrs": {"act_type": "relu"}, 
+      "inputs": [[21, 0, 0]]
+    }, 
+    {
+      "op": "Dropout", 
+      "name": "dropout3_fwd", 
+      "attrs": {
+        "axes": "()", 
+        "cudnn_off": "False", 
+        "p": "0.2"
+      }, 
+      "inputs": [[22, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "dense1_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "[\"xavier\", {\"rnd_type\": \"uniform\", \"factor_type\": \"avg\", \"magnitude\": 3}]", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(252, 1024)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "dense1_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "[\"normal\", {\"sigma\": 0.01}]", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(252,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "FullyConnected", 
+      "name": "dense1_fwd", 
+      "attrs": {
+        "flatten": "True", 
+        "no_bias": "False", 
+        "num_hidden": "252"
+      }, 
+      "inputs": [[23, 0, 0], [24, 0, 0], [25, 0, 0]]
+    }, 
+    {
+      "op": "Dropout", 
+      "name": "dropout4_fwd", 
+      "attrs": {
+        "axes": "()", 
+        "cudnn_off": "False", 
+        "p": "0.2"
+      }, 
+      "inputs": [[26, 0, 0]]
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "reshape0_reshape0", 
+      "attrs": {"shape": "(-1, 63, 4)"}, 
+      "inputs": [[27, 0, 0]]
+    }
+  ], 
+  "arg_nodes": [
+    0, 
+    1, 
+    2, 
+    7, 
+    8, 
+    13, 
+    14, 
+    19, 
+    20, 
+    24, 
+    25
+  ], 
+  "node_row_ptr": [
+    0, 
+    1, 
+    2, 
+    3, 
+    4, 
+    5, 
+    7, 
+    9, 
+    10, 
+    11, 
+    12, 
+    13, 
+    15, 
+    17, 
+    18, 
+    19, 
+    20, 
+    21, 
+    23, 
+    25, 
+    26, 
+    27, 
+    28, 
+    29, 
+    31, 
+    32, 
+    33, 
+    34, 
+    36, 
+    37
+  ], 
+  "heads": [[28, 0, 0]], 
+  "attrs": {"mxnet_version": ["int", 10901]}
+}

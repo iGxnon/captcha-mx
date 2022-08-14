@@ -4,10 +4,10 @@ import mxnet as mx
 from mxnet.gluon.contrib.estimator import estimator
 from mxnet.gluon.data.vision import transforms
 from mxnet.gluon.model_zoo import vision
-from loader import wrapper_set
-from const import opt
+from model.loader import wrapper_set
+from model.const import opt
 import os
-from utils import acc_metric
+from model.utils import acc_metric
 from mxnet.gluon.contrib.estimator.event_handler import TrainBegin, TrainEnd, EpochEnd, CheckpointHandler
 
 
@@ -29,7 +29,7 @@ class OutputLayer(nn.HybridBlock):
         _x = self.features(_x)
         _x = _x.transpose((0, 2, 3, 1))
         # 通道上做 softmax
-        _x = F.softmax(_x, axis=-1)
+        # _x = F.softmax(_x, axis=-1)
         # 融合 h, w 纬度
         _x = _x.reshape((-1, 10, 128))
 
@@ -80,10 +80,13 @@ if __name__ == '__main__':
     valid_loader = mx.gluon.data.DataLoader(dataset=wrapper_valid, batch_size=32, shuffle=True, num_workers=2)
 
     net = build_net()
-    net.initialize(init.Xavier())
+    if os.path.exists('./trained/my_model-epoch19batch3000.params'):
+        net.load_parameters('./trained/my_model-epoch19batch3000.params')
+    else:
+        net.initialize(init.Xavier())
     loss_fn = gluon.loss.CTCLoss(layout='NTC', label_layout='NT')
     learning_rate = 0.03
-    num_epochs = 1000
+    num_epochs = 20
     trainer = gluon.Trainer(net.collect_params(),
                             'sgd', {'learning_rate': learning_rate})
     acc = mx.metric.create(acc_metric)
@@ -95,10 +98,11 @@ if __name__ == '__main__':
 
     est = estimator.Estimator(net=net,
                               loss=loss_fn,
-                              train_metrics=acc,
+                              # train_metrics=acc,
                               trainer=trainer)
 
     est.fit(train_data=train_loader,
-            val_data=valid_loader,
+            #val_data=valid_loader,
             epochs=num_epochs,
-            event_handlers=[checkpoint_handler])
+            event_handlers=[checkpoint_handler]
+            )

@@ -3,8 +3,8 @@ import random
 import mxnet as mx
 from mxnet import nd
 import os
-from const import opt
-from utils import show_img
+from model.const import opt
+from model.utils import show_img
 
 import warnings
 
@@ -49,9 +49,10 @@ class SampleIter(mx.io.DataIter):
         start = self.cur_batch * self.batch_size
         end = start + self.batch_size
         picked = self.fnames[start:end]
+        flag = self.data_shape[0] == 3  # 判断是否加载成灰度图
         return [self.transform(
             mx.image.imresize(
-                mx.image.imread(os.path.join(self.data_path, fname)),  # (w, h, c)
+                mx.image.imread(os.path.join(self.data_path, fname), flag=1 if flag else 0),  # (w, h, c)
                 w=self.data_shape[1], h=self.data_shape[2]
             )) for fname in picked]  # (c, h, w)
 
@@ -125,4 +126,5 @@ if __name__ == '__main__':
                           label_shape=opt.MAX_CHAR_LEN)
     loader = mx.gluon.data.DataLoader(dataset=wrapper, batch_size=10, shuffle=True, num_workers=4)
     x, y = iter(loader).__next__()
-    show_img(x, y, 5, 2, title_size=50)
+    print(x.shape)
+    show_img(x, y, 5, 2, transpose=False, title_size=50)
