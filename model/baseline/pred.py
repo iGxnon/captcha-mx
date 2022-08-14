@@ -1,7 +1,6 @@
 import random
-
-from model.pred import prepare_img
 import os
+from model.utils import prepare_img
 from mxnet import nd
 from model.utils import get_label
 from model.utils import show_img

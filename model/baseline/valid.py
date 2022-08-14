@@ -1,8 +1,6 @@
 import mxnet as mx
 import mxnet.gluon as gln
-from mxnet import init
-from mxnet.gluon import nn
-from mxnet.gluon.contrib.estimator import CheckpointHandler, estimator
+from mxnet.gluon.contrib.estimator import estimator
 from mxnet.gluon.data.vision import transforms
 from model.const import opt
 from model.loader import wrapper_set

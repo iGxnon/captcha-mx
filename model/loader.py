@@ -109,7 +109,7 @@ if __name__ == '__main__':
     sample = SampleIter(_opt=opt,
                         data_name='train',
                         label_name='label',
-                        data_path=os.fspath('./../sample/train'),
+                        data_path=os.fspath('../sample/train'),
                         data_shape=(3, 120, 60),  # (c, w, h)
                         label_shape=opt.MAX_CHAR_LEN)
     batch = sample.next()
@@ -121,7 +121,7 @@ if __name__ == '__main__':
 
     wrapper = wrapper_set(data_name='train',
                           label_name='label',
-                          data_path=os.fspath('./../sample/train'),
+                          data_path=os.fspath('../sample/train'),
                           data_shape=(3, 120, 60),  # (c, w, h)
                           label_shape=opt.MAX_CHAR_LEN)
     loader = mx.gluon.data.DataLoader(dataset=wrapper, batch_size=10, shuffle=True, num_workers=4)

@@ -1,6 +1,8 @@
 from mxnet import nd
 from model.const import opt
 from matplotlib import pyplot as plt
+import mxnet as mx
+import os
 
 
 def get_label(out):
@@ -22,6 +24,17 @@ def __get_label(out: nd.NDArray):
 
 def __get_labels(outs: nd.NDArray):
     return [__get_label(out) for out in outs]
+
+
+def prepare_img(root, fname, shape=(3, 120, 60)):
+    flag = shape[0] == 3  # 判断是否加载成灰度图
+    img = mx.image.imresize(
+        mx.image.imread(os.path.join(root, fname), flag=1 if flag else 0),
+        w=shape[1], h=shape[2]  # (w, h, c)
+    )
+    trans = mx.gluon.data.vision.transforms.ToTensor()
+    img = trans(img)
+    return mx.nd.reshape(img, (1, *img.shape))
 
 
 def show_img(X: nd.NDArray, y: nd.NDArray, rows, cols, transpose=True, title_size=30, figsize=(25, 25)):
@@ -102,4 +115,3 @@ def acc_metric(label, pred):
 if __name__ == '__main__':
     raw = nd.random.randn(4, 10, 63)
     print(get_output(raw))
-
