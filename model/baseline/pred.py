@@ -15,7 +15,7 @@ def predict_from(root, fname, net):
 
 if __name__ == '__main__':
     net = build_net()
-    dataset = 'valid_hard'
+    dataset = 'test'
     params = sorted([i for i in os.listdir('./trained') if i.endswith('.params')])
     print(f'picked param {params[len(params)-1]}')
     net.load_parameters(f'./trained/{params[len(params)-1]}')

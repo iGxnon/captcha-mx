@@ -1,2 +1,4 @@
 /venv
 /sample
+# Mac M1 编译 mxnet 2.0 后的目录
+/mxnet
