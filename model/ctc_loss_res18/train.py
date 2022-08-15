@@ -87,15 +87,15 @@ if __name__ == '__main__':
     valid_loader = mx.gluon.data.DataLoader(dataset=wrapper_valid, batch_size=128, shuffle=True, num_workers=2)
 
     net = build_net()
-    if os.path.exists('trained/my_model-epoch19batch3000.params'):
-        net.load_parameters('./trained/my_model-epoch19batch3000.params')
+    if os.path.exists('trained/my_model-epoch99batch8300.params'):
+        net.load_parameters('./trained/my_model-epoch99batch8300.params')
     else:
         net.initialize(init.Xavier())
     loss_fn = gluon.loss.CTCLoss(layout='NTC', label_layout='NT')
-    learning_rate = 0.03
+    learning_rate = 0.4
     num_epochs = 100
     trainer = gluon.Trainer(net.collect_params(),
-                            'sgd', {'learning_rate': learning_rate})
+                            'adam', {'learning_rate': learning_rate})
     acc = mx.metric.create(acc_metric)
 
     checkpoint_handler = CheckpointHandler(model_dir='trained',

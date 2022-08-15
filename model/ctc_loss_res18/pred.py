@@ -15,6 +15,6 @@ def predict_from(root, fname, net):
 
 if __name__ == '__main__':
     net = build_net()
-    net.load_parameters('./trained/my_model-epoch19batch3000.params')
-    img, pred, raw = predict_from(root='./../sample/train', fname='0arV_1660302295.jpg', net=net)
+    net.load_parameters('./trained/my_model-epoch99batch8300.params')
+    img, pred, raw = predict_from(root='./../../sample/train', fname='0EnM_1660290703.jpg', net=net)
     print(f'pred is "{pred}", raw is "{raw}", true is "0arV"')
