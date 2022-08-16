@@ -1,6 +1,7 @@
 from mxnet import gluon, init
 from mxnet.gluon import nn
 import mxnet as mx
+import mxnet.autograd as ag
 from mxnet.gluon.contrib.estimator import estimator
 from mxnet.gluon.data.vision import transforms
 from mxnet.gluon.model_zoo import vision
@@ -22,7 +23,7 @@ class OutputLayer(nn.HybridBlock):
             self.features.add(nn.BatchNorm())
             self.features.add(nn.Activation('relu'))
             self.features.add(nn.MaxPool2D(3, 2, 1))
-            self.features.add(nn.Dropout(0.7))
+            self.features.add(nn.Dropout(0.3))
             self.dense = nn.Dense(opt.CHAR_LEN, flatten=False)
 
     def hybrid_forward(self, F, _x, *args, **kwargs):
@@ -30,12 +31,13 @@ class OutputLayer(nn.HybridBlock):
         _x = self.features(_x)
         _x = _x.transpose((0, 2, 3, 1))
         # 通道上做 softmax
-        _x = F.softmax(_x, axis=-1)
+        # _x = F.softmax(_x, axis=-1)
         # 融合 h, w 纬度
         _x = _x.reshape((-1, 10, 128))
 
         # print(_x.shape)
         _x = self.dense(_x)
+        _x = F.softmax(_x, axis=-1)
         return _x
 
 
@@ -46,16 +48,16 @@ def build_net():
     _net.add(nn.BatchNorm())
     _net.add(nn.Activation('relu'))
     _net.add(nn.MaxPool2D(3, 2, 1))
-    _net.add(nn.Dropout(0.7))
+    _net.add(nn.Dropout(0.3))
 
     resnet_18_v2_feat = vision.resnet18_v2(pretrained=False).features
     for layer in resnet_18_v2_feat[5:7]:
         _net.add(layer)
-        _net.add(nn.Dropout(0.7))
+        _net.add(nn.Dropout(0.3))
 
     for layer in resnet_18_v2_feat[9:-2]:
         _net.add(layer)
-        _net.add(nn.Dropout(0.7))
+        _net.add(nn.Dropout(0.3))
 
     _net.add(OutputLayer())
 
@@ -87,12 +89,12 @@ if __name__ == '__main__':
     valid_loader = mx.gluon.data.DataLoader(dataset=wrapper_valid, batch_size=128, shuffle=True, num_workers=2)
 
     net = build_net()
-    if os.path.exists('trained/my_model-epoch99batch8300.params'):
-        net.load_parameters('./trained/my_model-epoch99batch8300.params')
+    if os.path.exists('trained/my_model-epoch3batch332.params'):
+        net.load_parameters('./trained/my_model-epoch3batch332.params')
     else:
         net.initialize(init.Xavier())
     loss_fn = gluon.loss.CTCLoss(layout='NTC', label_layout='NT')
-    learning_rate = 0.4
+    learning_rate = 1.3
     num_epochs = 100
     trainer = gluon.Trainer(net.collect_params(),
                             'adam', {'learning_rate': learning_rate})

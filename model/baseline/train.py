@@ -38,7 +38,6 @@ def build_net():
     _net.add(nn.Dense(units=opt.CHAR_LEN * opt.MAX_CHAR_LEN,
                       weight_initializer=init.Xavier(),
                       bias_initializer=init.Normal()))
-    _net.add(nn.Dropout(rate=0.2))
     _net.add(reshape())
     return _net
 
