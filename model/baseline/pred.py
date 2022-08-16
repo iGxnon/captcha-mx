@@ -24,6 +24,7 @@ if __name__ == '__main__':
         img = prepare_img(root=f'./../../sample/{dataset}', fname=fname, shape=(1, 80, 30))
         pred = nd.argmax(net(img), axis=1)
         show_img(img, pred, cols=1, rows=1, title_size=60)
+        print(fname, ' is predicted to ', get_label(pred))
 
 
 

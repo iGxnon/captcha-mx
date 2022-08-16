@@ -19,7 +19,7 @@ class OutputLayer(nn.HybridBlock):
         with self.name_scope():
             self.features = nn.HybridSequential(prefix='')
             # 给长度加一个 padding
-            self.features.add(nn.Conv2D(channels=128, kernel_size=2, strides=2, padding=(0, 1), use_bias=False))
+            self.features.add(nn.Conv2D(channels=128, kernel_size=2, strides=2, use_bias=False))
             self.features.add(nn.BatchNorm())
             self.features.add(nn.Activation('relu'))
             self.features.add(nn.MaxPool2D(3, 2, 1))
@@ -33,7 +33,7 @@ class OutputLayer(nn.HybridBlock):
         # 通道上做 softmax
         # _x = F.softmax(_x, axis=-1)
         # 融合 h, w 纬度
-        _x = _x.reshape((-1, 10, 128))
+        _x = _x.reshape((-1, 8, 128))
 
         # print(_x.shape)
         _x = self.dense(_x)
@@ -74,7 +74,7 @@ if __name__ == '__main__':
 
     wrapper_valid = wrapper_set(data_name='valid',
                                 label_name='label',
-                                data_path=os.fspath('../../sample/valid'),
+                                data_path=os.fspath('../../sample/test'),
                                 data_shape=(3, 120, 60),  # (c, w, h)
                                 label_shape=opt.MAX_CHAR_LEN)
 
@@ -85,23 +85,27 @@ if __name__ == '__main__':
     wrapper_train = wrapper_train.transform_first(trans)
     wrapper_valid = wrapper_valid.transform_first(trans)
 
-    train_loader = mx.gluon.data.DataLoader(dataset=wrapper_train, batch_size=128, shuffle=True, num_workers=4)
-    valid_loader = mx.gluon.data.DataLoader(dataset=wrapper_valid, batch_size=128, shuffle=True, num_workers=2)
+    train_loader = mx.gluon.data.DataLoader(dataset=wrapper_train, batch_size=128, shuffle=True)
+    valid_loader = mx.gluon.data.DataLoader(dataset=wrapper_valid, batch_size=128, shuffle=True)
 
     net = build_net()
-    if os.path.exists('trained/my_model-epoch3batch332.params'):
-        net.load_parameters('./trained/my_model-epoch3batch332.params')
+    params = sorted([i for i in os.listdir('./trained') if i.endswith('.params')])
+    if len(params) != 0:
+        print(f'picked param {params[len(params) - 1]}')
+        net.load_parameters(f'./trained/{params[len(params) - 1]}')
     else:
-        net.initialize(init.Xavier())
+        net.initialize(mx.init.Xavier())
+
     loss_fn = gluon.loss.CTCLoss(layout='NTC', label_layout='NT')
     learning_rate = 1.3
-    num_epochs = 100
+    num_epochs = 10
     trainer = gluon.Trainer(net.collect_params(),
-                            'adam', {'learning_rate': learning_rate})
+                            optimizer=mx.optimizer.AdaDelta())
     acc = mx.metric.create(acc_metric)
 
     checkpoint_handler = CheckpointHandler(model_dir='trained',
                                            model_prefix='my_model',
+                                           mode='max',
                                            monitor=acc,  # Monitors a metric
                                            save_best=True)  # Save the best model in terms of
 

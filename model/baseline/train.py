@@ -45,17 +45,19 @@ def build_net():
 if __name__ == '__main__':
     net = build_net()
     net.hybridize()
-    net.load_parameters('./trained/baseline_model-epoch9batch830.params')
+    params = sorted([i for i in os.listdir('./trained') if i.endswith('.params')])
+    print(f'picked param {params[len(params) - 1]}')
+    net.load_parameters(f'./trained/{params[len(params) - 1]}')
 
     wrapper_train = wrapper_set(data_name='train',
                                 label_name='label',
-                                data_path=os.fspath('./../../sample/train_hard'),
+                                data_path=os.fspath('./../../sample/train'),
                                 data_shape=(1, 80, 30),  # (c, w, h)
                                 label_shape=opt.MAX_CHAR_LEN)
 
     wrapper_valid = wrapper_set(data_name='valid',
                                 label_name='label',
-                                data_path=os.fspath('./../../sample/valid_hard'),
+                                data_path=os.fspath('./../../sample/test'),
                                 data_shape=(1, 80, 30),  # (c, w, h)
                                 label_shape=opt.MAX_CHAR_LEN)
     trans = transforms.Compose([
@@ -77,7 +79,7 @@ if __name__ == '__main__':
     acc = mx.metric.create(lambda y, y_hat: -loss_fn(y_hat, y))
 
     checkpoint_handler = CheckpointHandler(model_dir='./trained',
-                                           model_prefix='baseline_model_hard',
+                                           model_prefix='baseline',
                                            monitor=acc,
                                            save_best=True)
 
