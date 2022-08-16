@@ -8,9 +8,11 @@ import os
 from model.baseline.train import build_net
 
 if __name__ == '__main__':
-    net = build_net()
+    net = build_net(dropout_rate=0.01)
     net.hybridize()
-    net.load_parameters('./trained/baseline_model-epoch9batch830.params')
+    params = sorted([i for i in os.listdir('./trained') if i.endswith('.params')])
+    print(f'picked param {params[len(params) - 1]}')
+    net.load_parameters(f'./trained/{params[len(params) - 1]}')
 
     wrapper_train = wrapper_set(data_name='train',
                                 label_name='label',

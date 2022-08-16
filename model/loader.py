@@ -16,7 +16,7 @@ class SampleIter(mx.io.DataIter):
     def __init__(self, _opt, data_name, label_name, data_path, data_shape, label_shape, batch_size=16, shuffle=True):
         super().__init__(batch_size)
         self.opt = _opt
-        self.fnames = os.listdir(data_path)
+        self.fnames = [i for i in os.listdir(data_path) if i.endswith('.jpg') or i.endswith('.png')]
         self.data_path = data_path
         self.data_shape = data_shape
         if shuffle:

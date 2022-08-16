@@ -16,7 +16,7 @@ class reshape(nn.HybridBlock):
         return F.reshape(_x, (-1, opt.CHAR_LEN, opt.MAX_CHAR_LEN))
 
 
-def build_net():
+def build_net(dropout_rate=0.3):
     _net = nn.HybridSequential(prefix='')
     for i in [32, 64, 128]:
         _net.add(nn.Conv2D(channels=i,
@@ -26,14 +26,16 @@ def build_net():
                            weight_initializer=init.Xavier(),
                            bias_initializer=init.Normal()))
         _net.add(nn.MaxPool2D(pool_size=(2, 2), strides=(2, 2)))
-        _net.add(nn.Dropout(rate=0.2))
+        if dropout_rate > 0:
+            _net.add(nn.Dropout(rate=dropout_rate))
 
     _net.add(nn.Dense(units=1024,
                       flatten=True,
                       activation='relu',
                       weight_initializer=init.Xavier(),
                       bias_initializer=init.Normal()))
-    _net.add(nn.Dropout(rate=0.2))
+    if dropout_rate > 0:
+        _net.add(nn.Dropout(rate=dropout_rate))
 
     _net.add(nn.Dense(units=opt.CHAR_LEN * opt.MAX_CHAR_LEN,
                       weight_initializer=init.Xavier(),
