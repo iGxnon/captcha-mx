@@ -1,48 +1,11 @@
 import mxnet as mx
 import mxnet.gluon as gln
-from mxnet import init
-from mxnet.gluon import nn
 from mxnet.gluon.contrib.estimator import CheckpointHandler, estimator
 from mxnet.gluon.data.vision import transforms
 from model.const import opt
 from model.loader import wrapper_set
 import os
-
-
-class reshape(nn.HybridBlock):
-    def hybrid_forward(self, F, _x, *args, **kwargs):
-        # 吐了，opt.CHAR_LEN 和 opt.MAX_CHAR_LEN 换个位置，softmaxce 设置一下 axies，就说形状不匹配
-        # 翻到之前有一个 issue 也碰到这样的问题
-        return F.reshape(_x, (-1, opt.CHAR_LEN, opt.MAX_CHAR_LEN))
-
-
-def build_net(dropout_rate=0.3):
-    _net = nn.HybridSequential(prefix='')
-    for i in [32, 64, 128]:
-        _net.add(nn.Conv2D(channels=i,
-                           kernel_size=3,
-                           strides=1,
-                           activation='relu',
-                           weight_initializer=init.Xavier(),
-                           bias_initializer=init.Normal()))
-        _net.add(nn.MaxPool2D(pool_size=(2, 2), strides=(2, 2)))
-        if dropout_rate > 0:
-            _net.add(nn.Dropout(rate=dropout_rate))
-
-    _net.add(nn.Dense(units=1024,
-                      flatten=True,
-                      activation='relu',
-                      weight_initializer=init.Xavier(),
-                      bias_initializer=init.Normal()))
-    if dropout_rate > 0:
-        _net.add(nn.Dropout(rate=dropout_rate))
-
-    _net.add(nn.Dense(units=opt.CHAR_LEN * opt.MAX_CHAR_LEN,
-                      weight_initializer=init.Xavier(),
-                      bias_initializer=init.Normal()))
-    _net.add(reshape())
-    return _net
-
+from network import build_net
 
 if __name__ == '__main__':
     net = build_net()

@@ -5,38 +5,19 @@
 ## TOC
 
 - [文件结构](#文件结构)
-- [模型结构](#模型结构)
+- [预测模型结构](#模型结构)
   - [Baseline](#Baseline)
   - [Res18-CTC](#Res18-CTC)
+  - [Rese18-ACE](#Rese18-ACE)
+  - [Baseline-split](#Baseline-split)
+- [样本生成模型结构](#样本生成模型结构)
 - [结果](#结果)
 
 ## 文件结构
 
 ```
-├── model
-│   ├── baseline						--- baseline 模型
-│   │   ├── pred.py						--- 预测
-│   │   ├── trained						--- 训练的 checkpoints
-│   │   ├── train.py					--- 训练
-│   │   └── valid.py					--- 验证
-│   ├── const.py
-│   ├── ctc_loss_res18					--- ctc_loss_res18 模型
-│   │   ├── pred.py
-│   │   ├── trained
-│   │   ├── train.py
-│   │   └── valid.py					
-│   ├── loader.py						--- 数据加载
-│   └── utils.py						--- 工具包
-├── README.md
-└── sample_gen							--- 训练数据生成
-    ├── adversarial_captchas.ipynb
-    └── fonts							--- 字体
-        ├── font2.otf
-        ├── font3.ttf
-        └── font.ttf
+...
 ```
-
-
 
 ## 模型结构
 
@@ -59,7 +40,7 @@
 
 ---
 
-### Res18-CTC
+### Res18-CTC (已经移除)
 
 > 有点类似 `DFCNN`，只不过卷积层用的是 Res18 的一部分，最后套了一个 `CTCLoss`
 
@@ -117,6 +98,12 @@ class OutputLayer(nn.HybridBlock):
         _x = self.dense(_x)
         return _x
 ```
+
+### Rese18-ACE (暂未收敛)
+
+### Baseline-split
+
+## 样本生成模型结构
 
 ## 结果
 

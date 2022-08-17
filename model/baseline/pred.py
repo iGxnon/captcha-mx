@@ -4,7 +4,7 @@ from model.utils import prepare_img
 from mxnet import nd
 from model.utils import get_label
 from model.utils import show_img
-from train import build_net
+from network import build_net
 
 
 def predict_from(root, fname, net):
@@ -23,6 +23,7 @@ if __name__ == '__main__':
     for fname in tests:
         img = prepare_img(root=f'./../../sample/{dataset}', fname=fname, shape=(1, 80, 30))
         pred = nd.argmax(net(img), axis=1)
+        print(img.shape)
         show_img(img, pred, cols=1, rows=1, title_size=60)
         print(fname, ' is predicted to ', get_label(pred))
 
