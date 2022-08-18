@@ -1,6 +1,6 @@
 from mxnet import nd
 from model.const import opt
-# from matplotlib import pyplot as plt
+from matplotlib import pyplot as plt
 import mxnet as mx
 import os
 
@@ -38,32 +38,31 @@ def prepare_img(root, fname, shape=(3, 120, 40)):
 
 
 def show_img(X: nd.NDArray, y: nd.NDArray, rows, cols, transpose=True, title_size=30, figsize=(25, 25)):
-    pass
-    # X = X[:rows * cols]
-    # y = y[:rows * cols]
-    # _, figs = plt.subplots(rows, cols, figsize=figsize)
-    # if rows * cols == 1:
-    #     if transpose:
-    #         figs.imshow(X[0].transpose((1, 2, 0)).asnumpy())
-    #     else:
-    #         figs.imshow(X[0].asnumpy())
-    #     figs.axes.set_title(get_label(y[0]))
-    #     figs.axes.title.set_fontsize(title_size)
-    #     figs.axes.get_xaxis().set_visible(False)
-    #     figs.axes.get_yaxis().set_visible(False)
-    #     plt.show()
-    #     return
-    #
-    # for fig, x, yi in zip(figs.reshape(rows * cols), X, y):
-    #     if transpose:
-    #         fig.imshow(x.transpose((1, 2, 0)).asnumpy())
-    #     else:
-    #         fig.imshow(x.asnumpy())
-    #     fig.axes.set_title(get_label(yi))
-    #     fig.axes.title.set_fontsize(title_size)
-    #     fig.axes.get_xaxis().set_visible(False)
-    #     fig.axes.get_yaxis().set_visible(False)
-    # plt.show()
+    X = X[:rows * cols]
+    y = y[:rows * cols]
+    _, figs = plt.subplots(rows, cols, figsize=figsize)
+    if rows * cols == 1:
+        if transpose:
+            figs.imshow(X[0].transpose((1, 2, 0)).asnumpy())
+        else:
+            figs.imshow(X[0].asnumpy())
+        figs.axes.set_title(get_label(y[0]))
+        figs.axes.title.set_fontsize(title_size)
+        figs.axes.get_xaxis().set_visible(False)
+        figs.axes.get_yaxis().set_visible(False)
+        plt.show()
+        return
+
+    for fig, x, yi in zip(figs.reshape(rows * cols), X, y):
+        if transpose:
+            fig.imshow(x.transpose((1, 2, 0)).asnumpy())
+        else:
+            fig.imshow(x.asnumpy())
+        fig.axes.set_title(get_label(yi))
+        fig.axes.title.set_fontsize(title_size)
+        fig.axes.get_xaxis().set_visible(False)
+        fig.axes.get_yaxis().set_visible(False)
+    plt.show()
 
 
 def count_rptch(text):

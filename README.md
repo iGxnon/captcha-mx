@@ -16,7 +16,45 @@
 ## 文件结构
 
 ```
-...
+.
+├── README.md
+├── model
+│   ├── ace_loss_res18
+│   │   ├── __pycache__
+│   │   │   ├── network.cpython-37.pyc
+│   │   │   ├── network.cpython-38.pyc
+│   │   │   └── train.cpython-38.pyc
+│   │   ├── network.py
+│   │   ├── pred.py
+│   │   ├── train.py
+│   │   └── trained
+│   ├── baseline
+│   │   ├── __pycache__
+│   │   │   ├── train.cpython-37.pyc
+│   │   │   └── train.cpython-38.pyc
+│   │   ├── network.py
+│   │   ├── pred.py
+│   │   ├── train.py
+│   │   └── trained
+│   ├── const.py
+│   ├── loader.py
+│   ├── split-baseline
+│   │   ├── __pycache__
+│   │   │   ├── network.cpython-37.pyc
+│   │   │   └── network.cpython-38.pyc
+│   │   ├── network.py
+│   │   ├── pred.py
+│   │   ├── train.py
+│   │   └── trained
+│   └── utils.py
+└── sample_gen
+    ├── adversarial_captchas.ipynb
+    ├── fonts
+    │   ├── font.ttf
+    │   ├── font2.otf
+    │   └── font3.ttf
+    └── model
+
 ```
 
 ## 模型结构
@@ -99,11 +137,19 @@ class OutputLayer(nn.HybridBlock):
         return _x
 ```
 
-### Rese18-ACE (暂未收敛)
+### Rese18-ACE
+
+未收敛，看样子和 CTCLoss 一样
 
 ### Baseline-split
 
+先将验证码分割，然后再预测每一个字符
+
+效果还不错
+
 ## 样本生成模型结构
+
+// TODO
 
 ## 结果
 

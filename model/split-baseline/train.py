@@ -20,7 +20,7 @@ if __name__ == '__main__':
                                 data_shape=(1, 40, 60),  # (c, w, h)
                                 label_shape=opt.MAX_CHAR_LEN)
 
-    net = build_net(0.4)
+    net = build_net(0.3)
     params = sorted([i for i in os.listdir('./trained') if i.endswith('.params')])
     if len(params) != 0:
         print(f'picked param {params[len(params) - 1]}')
@@ -39,10 +39,10 @@ if __name__ == '__main__':
 
     loss_fn = gln.loss.SoftmaxCrossEntropyLoss(axis=1)
 
-    learning_rate = 0.008
+    learning_rate = 0.0005
     num_epochs = 10
     trainer = gln.Trainer(net.collect_params(),
-                          optimizer=mx.optimizer.AdaDelta())
+                          'sgd', {'learning_rate': learning_rate})
 
     acc = mx.metric.create(lambda y, y_hat: -loss_fn(y_hat, y))
 
